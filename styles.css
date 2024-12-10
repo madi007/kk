@@ -172,6 +172,14 @@ body, html {
             border-radius: 5px;
             font-size: 14px;
         }
+        input[type="text"].readonly {
+            border: none;
+            background: none;
+            padding: 0;
+            font-size: 16px;
+            color: #333;
+            pointer-events: none; /* Полностью отключает возможность взаимодействия */
+        }
         button {
             padding: 10px 15px;
             background-color: #28a745;
@@ -185,6 +193,7 @@ body, html {
             background-color: #ccc;
             cursor: not-allowed;
         }
+    
 /* Footer */
 .footer {
     display: flex;
