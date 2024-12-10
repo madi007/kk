@@ -234,7 +234,7 @@ body, html {
     bottom: -100%;
     left: 0;
     width: 100%;
-    max-width: 395px;
+    max-width: 415px;
     background: white;
     box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2);
     border-radius: 10px 10px 0 0;
@@ -277,7 +277,7 @@ body, html {
     bottom: 0;
     left: 50%; /* Центрируем по горизонтали */
     transform: translateX(-50%) translateY(100%); /* Смещаем по горизонтали и скрываем */
-    width: 390px; /* Фиксированная ширина */
+    width: 400px; /* Фиксированная ширина */
     height: 300px; /* Фиксированная высота */
     background-color: #ffffff;
     border-top-left-radius: 15px;
