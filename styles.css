@@ -153,17 +153,15 @@ body, html {
             margin-bottom: 15px;
         }
         .det-info {
-            font-weight: bold;
+            font-weight: 450;
             margin-bottom: 5px;
-            color: #888888;
+            color: #999;
         }
-.info {
-    font-weight: 500;
-}
         input[type="text"] {
             width: 100%;
             padding: 8px;
             margin-top: 5px;
+            font-weight: 500;
             border: 1px solid #ccc;
             border-radius: 5px;
             font-size: 14px;
