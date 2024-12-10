@@ -150,32 +150,41 @@ body, html {
 }
 
 .content {
-    padding: 0;
-}
-
-.detail-item {
-    margin-top: 10px;
-    margin-left: 10px;
-    margin-bottom: 10px; /* Увеличиваем расстояние между элементами */
-    padding: 10px 0; /* Отступы внутри каждого элемента */
-}
-
-.det-info {
-    font-size: 13px;
-    margin-bottom: 5px; /* Отступ между названием поля и значением */
-    font-weight: 450;
-    color: #999;
-    display: block;
-}
-
-.detail-item span {
-    font-weight: 500;
-    font-size: 15px;
-    color: #000;
-    display: block;
-    line-height: 1.4; /* Высота строки для улучшенной читаемости */
-}
-
+            max-width: 400px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+        }
+        .detail-item {
+            margin-bottom: 15px;
+        }
+        .det-info {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
 /* Footer */
 .footer {
     display: flex;
