@@ -155,6 +155,7 @@ body, html {
         .det-info {
             font-weight: bold;
             margin-bottom: 5px;
+            color: #e0e0e0;
         }
         input[type="text"] {
             width: 100%;
