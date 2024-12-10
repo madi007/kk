@@ -54,27 +54,29 @@ document.addEventListener('click', (e) => {
     }
 });
 
-document.addEventListener("DOMContentLoaded", function() {
-    const uploadButton = document.getElementById('upload-button');
-    const imageContainer = document.getElementById('image-container');
-    const uploadedImage = document.getElementById('uploaded-image');
+document.addEventListener("DOMContentLoaded", function () {
+    const uploadButton = document.getElementById("upload-button");
+    const imageContainer = document.getElementById("image-container");
+    const uploadedImage = document.getElementById("uploaded-image");
 
-    // Обработчик длякнопки загрузки
-    uploadButton.addEventListener('click', function() {
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.accept = 'image/*'; // Только изображения
+    // Обработчик для кнопки загрузки
+    uploadButton.addEventListener("click", function () {
+        const input = document.createElement("input");
+        input.type = "file";
+        input.accept = "image/*"; // Только изображения
 
         // Когда файл выбран
-        input.addEventListener('change', function(event) {
+        input.addEventListener("change", function (event) {
             const file = event.target.files[0];
             if (file) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = function (e) {
                     uploadedImage.src = e.target.result; // Загружаем изображение в img
-                    imageContainer.style.display = 'flex'; // Показываем контейнер с изображением
-                    uploadButton.style.display = 'none'; // Скрываем кнопку
-                    document.body.style.overflow = 'hidden'; // Отключаем прокрутку страницы
+                    imageContainer.style.display = "flex"; // Показываем контейнер с изображением
+                    uploadButton.style.display = "none"; // Скрываем кнопку
+
+                    // Сохраняем изображение в localStorage
+                    localStorage.setItem("uploadedImage", e.target.result);
                 };
                 reader.readAsDataURL(file); // Читаем файл
             }
@@ -84,65 +86,15 @@ document.addEventListener("DOMContentLoaded", function() {
         input.click();
     });
 
-    // Реализация зума с помощью колеса мыши (для ПК)
-    let scale = 1;
-
-    uploadedImage.addEventListener('wheel', function(e) {
-        e.preventDefault(); // Предотвращаем зум всего сайта
-        if (e.deltaY < 0) {
-            scale *= 1.1; // Приближаем
-        } else {
-            scale /= 1.1; // Отдаляем
-        }
-
-        uploadedImage.style.transform = `scale(${scale})`;
-    });
-
-    // Реализация зума для мобильных устройств (с помощью жестов pinch-to-zoom)
-    let startDistance = 0;
-    let currentScale = 1;
-
-    imageContainer.addEventListener('touchstart', function(e) {
-        if (e.touches.length === 2) {
-            // Вычисляем начальное расстояние между пальцами
-            startDistance = Math.hypot(
-                e.touches[0].pageX - e.touches[1].pageX,
-                e.touches[0].pageY - e.touches[1].pageY
-            );
-        }
-    });
-
-    imageContainer.addEventListener('touchmove', function(e) {
-        if (e.touches.length === 2) {
-            // Вычисляем текущее расстояние между пальцами
-            const endDistance = Math.hypot(
-                e.touches[0].pageX - e.touches[1].pageX,
-                e.touches[0].pageY - e.touches[1].pageY
-            );
-
-            // Если расстояние изменилось, зумируем изображение
-            if (startDistance > 0) {
-                const scaleChange = endDistance / startDistance;
-                currentScale *= scaleChange;
-
-                // Ограничиваем масштаб
-                currentScale = Math.min(Math.max(currentScale, 1), 3); // Меньше 1 и больше 3 нельзя
-
-                uploadedImage.style.transform = `scale(${currentScale})`;
-                startDistance = endDistance; // Обновляем начальное расстояние для следующего шага
-            }
-        }
-    });
-
-    // Закрытие изображения
-    imageContainer.addEventListener('click', function() {
-        imageContainer.style.display = 'none'; // Скрыть контейнер с изображением
-        uploadButton.style.display = 'block'; // Показать кнопку загрузки
-        document.body.style.overflow = 'auto'; // Включаем прокрутку страницы снова
-        scale = 1; // Сбросить масштаб
-        uploadedImage.style.transform = 'scale(1)'; // Сбросить масштаб изображения
-    });
+    // Проверяем, есть ли сохраненное изображение
+    const savedImage = localStorage.getItem("uploadedImage");
+    if (savedImage) {
+        uploadedImage.src = savedImage; // Загружаем сохраненное изображение
+        imageContainer.style.display = "flex"; // Показываем контейнер с изображением
+        uploadButton.style.display = "none"; // Скрываем кнопку
+    }
 });
+
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/service-worker.js')
