@@ -149,3 +149,37 @@ if ('serviceWorker' in navigator) {
     .then(() => console.log('Service Worker зарегистрирован'))
     .catch((err) => console.log('Ошибка регистрации Service Worker:', err));
 }
+
+
+// Проверка сохранённых данных
+        document.addEventListener('DOMContentLoaded', () => {
+            const fields = ['fio', 'iin', 'birthdate', 'docNumber', 'issueDate', 'expiryDate'];
+            let isSaved = localStorage.getItem('isSaved');
+            
+            if (isSaved === 'true') {
+                fields.forEach(field => {
+                    let input = document.getElementById(field);
+                    input.value = localStorage.getItem(field);
+                    input.disabled = true;
+                });
+                document.getElementById('saveButton').disabled = true;
+            }
+        });
+
+        // Сохранение данных
+        document.getElementById('saveButton').addEventListener('click', () => {
+            const fields = ['fio', 'iin', 'birthdate', 'docNumber', 'issueDate', 'expiryDate'];
+            let allFilled = fields.every(field => document.getElementById(field).value.trim() !== '');
+
+            if (allFilled) {
+                fields.forEach(field => {
+                    localStorage.setItem(field, document.getElementById(field).value);
+                    document.getElementById(field).disabled = true;
+                });
+                localStorage.setItem('isSaved', 'true');
+                document.getElementById('saveButton').disabled = true;
+                alert('Данные успешно сохранены!');
+            } else {
+                alert('Пожалуйста, заполните все поля.');
+            }
+        });
