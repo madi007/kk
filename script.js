@@ -143,3 +143,9 @@ document.addEventListener("DOMContentLoaded", function() {
         uploadedImage.style.transform = 'scale(1)'; // Сбросить масштаб изображения
     });
 });
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/service-worker.js')
+    .then(() => console.log('Service Worker зарегистрирован'))
+    .catch((err) => console.log('Ошибка регистрации Service Worker:', err));
+}
