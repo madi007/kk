@@ -154,30 +154,33 @@ if ('serviceWorker' in navigator) {
 // Проверка сохранённых данных
         document.addEventListener('DOMContentLoaded', () => {
             const fields = ['fio', 'iin', 'birthdate', 'docNumber', 'issueDate', 'expiryDate'];
+            const saveButton = document.getElementById('saveButton');
             let isSaved = localStorage.getItem('isSaved');
             
             if (isSaved === 'true') {
                 fields.forEach(field => {
                     let input = document.getElementById(field);
                     input.value = localStorage.getItem(field);
-                    input.disabled = true;
+                    input.classList.add('readonly');
                 });
-                document.getElementById('saveButton').disabled = true;
+                saveButton.style.display = 'none'; // Скрыть кнопку
             }
         });
 
         // Сохранение данных
         document.getElementById('saveButton').addEventListener('click', () => {
             const fields = ['fio', 'iin', 'birthdate', 'docNumber', 'issueDate', 'expiryDate'];
+            const saveButton = document.getElementById('saveButton');
             let allFilled = fields.every(field => document.getElementById(field).value.trim() !== '');
 
             if (allFilled) {
                 fields.forEach(field => {
-                    localStorage.setItem(field, document.getElementById(field).value);
-                    document.getElementById(field).disabled = true;
+                    const input = document.getElementById(field);
+                    localStorage.setItem(field, input.value);
+                    input.classList.add('readonly'); // Применяем стили для отображения текста
                 });
                 localStorage.setItem('isSaved', 'true');
-                document.getElementById('saveButton').disabled = true;
+                saveButton.style.display = 'none'; // Скрыть кнопку
                 alert('Данные успешно сохранены!');
             } else {
                 alert('Пожалуйста, заполните все поля.');
