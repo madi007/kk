@@ -155,8 +155,11 @@ body, html {
         .det-info {
             font-weight: bold;
             margin-bottom: 5px;
-            color: #e0e0e0;
+            color: #888888;
         }
+.info {
+    font-weight: 500;
+}
         input[type="text"] {
             width: 100%;
             padding: 8px;
@@ -170,7 +173,7 @@ body, html {
             background: none;
             padding: 0;
             font-size: 16px;
-            color: #333;
+            color: black;
             pointer-events: none; /* Полностью отключает возможность взаимодействия */
         }
         button {
