@@ -1,20 +1,14 @@
 /* Общие настройки */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-
 body, html {
     margin-top: -20px;
     font-family: Arial, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: calc(100% + 10px);
+    height: 100vh;
     background-color: white;
     overflow: hidden;
     touch-action: manipulation;
-    overflow: hidden;
 
 }
 
@@ -347,14 +341,6 @@ body, html {
 }
 
 /* Страница фиксирована, чтобы не растягивалась */
-body, html {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: calc(100% + 10px);
-    overflow: hidden; /* Запрещаем прокрутку страницы */
-    background-color: #f0f0f0; /* Фон страницы */
-}
 
 /* Фиксируем контейнер с изображением на экране */
 .image-container {
@@ -409,11 +395,4 @@ main {
     margin-top: 80px; /* Отступ, чтобы не перекрывалась шапкой */
     margin-bottom: 60px; /* Отступ для нижнего блока */
     z-index: 5000;
-}
-
-/* Убедитесь, что изображение масштабируется только внутри контейнера */
-html, body {
-    height: calc(100% + 10px);
-    width: 100%;
-    overflow: hidden;
 }
