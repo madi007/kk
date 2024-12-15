@@ -4,7 +4,6 @@ button, a, img, div, span {
 }
 
 body, html {
-    margin-top: 1px;
     font-family: Arial, sans-serif;
     display: flex;
     justify-content: center;
@@ -13,21 +12,22 @@ body, html {
     background-color: white;
     overflow: hidden;
     outline: none;
+    margin: 0;
+    padding: 0;
     touch-action: manipulation;
 
 }
 
 .container {
-    margin-top: 1px;
     width: 100vw;
     height: 100vh;
     background-color: white;
     display: flex;
     flex-direction: column;
     position: relative;
+    margin: 0;
+    padding: 0;
     outline: none;
-    outline: none;
-    top: 1px;
 }
 
 /* Header */
