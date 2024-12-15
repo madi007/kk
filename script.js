@@ -138,3 +138,12 @@ if ('serviceWorker' in navigator) {
                 alert('Пожалуйста, заполните все поля.');
             }
         });
+
+document.querySelectorAll('button, input, a, textarea, select, img, div, span').forEach(element => {
+  element.addEventListener('focus', () => {
+    element.style.outline = 'none';
+  });
+  element.addEventListener('blur', () => {
+    element.style.outline = '';
+  });
+});
