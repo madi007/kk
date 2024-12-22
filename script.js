@@ -175,7 +175,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     let scale = 1;
     let position = { x: 0, y: 0 };
-    let velocity = { x: 0, y: 0 };
     let lastPosition = { x: 0, y: 0 };
     let isPanning = false;
     let initialTouch = { x: 0, y: 0 };
@@ -183,20 +182,20 @@ document.addEventListener("DOMContentLoaded", function () {
     let isSwipeThresholdReached = false;
 
     const SWIPE_THRESHOLD = 50; // Порог для распознавания свайпа
-    const FRICTION = 0.8; // Замедление движения
     const MIN_SWIPE_DISTANCE = 10; // Минимальная дистанция свайпа, чтобы считать его "серьезным"
 
     imageContainer.addEventListener("touchstart", (e) => {
         if (e.touches.length === 1) {
+            // Начало свайпа одним пальцем (перемещение изображения)
             initialTouch.x = e.touches[0].clientX;
             initialTouch.y = e.touches[0].clientY;
             isPanning = true;
             lastPosition.x = e.touches[0].clientX - position.x;
             lastPosition.y = e.touches[0].clientY - position.y;
-            velocity = { x: 0, y: 0 }; // Сбрасываем скорость
-            isHorizontalSwipe = false; // Сбрасываем флаг свайпа
-            isSwipeThresholdReached = false; // Сбрасываем флаг порога свайпа
+            isHorizontalSwipe = false; // Сброс флага для горизонтального свайпа
+            isSwipeThresholdReached = false; // Сброс флага порога свайпа
         } else if (e.touches.length === 2) {
+            // Масштабирование двумя пальцами
             isPanning = false;
         }
     });
@@ -207,35 +206,24 @@ document.addEventListener("DOMContentLoaded", function () {
             const deltaY = e.touches[0].clientY - initialTouch.y;
 
             if (!isHorizontalSwipe && Math.abs(deltaX) > Math.abs(deltaY)) {
+                // Проверка, был ли это горизонтальный свайп
                 isHorizontalSwipe = true;
             }
 
             if (isHorizontalSwipe) {
-                // Если свайп еще не достиг порога, не срабатывает переход вкладок
-                if (Math.abs(deltaX) > MIN_SWIPE_DISTANCE) {
-                    isSwipeThresholdReached = true;
-                }
-
-                if (isSwipeThresholdReached) {
-                    handleImageSwipe(deltaX);
-                } else {
-                    handleImagePan(deltaX); // Панорамирование с задержкой, если свайп слишком маленький
-                }
-            } else {
-                handleImagePan(deltaX); // Панорамирование по вертикали
+                position.x = deltaX + lastPosition.x; // Перемещение изображения
+                updateTransform();
             }
         } else if (e.touches.length === 2) {
             // Масштабирование
             const distance = getDistance(e.touches[0], e.touches[1]);
             const newScale = Math.max(1, Math.min(scale * (distance / 200), 3));
-            const scaleChange = newScale / scale;
             scale = newScale;
 
             const rect = imageContainer.getBoundingClientRect();
-            position.x -= (rect.width / 2 - position.x) * (scaleChange - 1);
-            position.y -= (rect.height / 2 - position.y) * (scaleChange - 1);
+            position.x -= (rect.width / 2 - position.x) * (scale - 1);
+            position.y -= (rect.height / 2 - position.y) * (scale - 1);
 
-            restrictPosition();
             updateTransform();
         }
     });
@@ -243,6 +231,7 @@ document.addEventListener("DOMContentLoaded", function () {
     imageContainer.addEventListener("touchend", () => {
         isPanning = false;
 
+        // Если масштаб меньше 1, сбрасываем его до 1
         if (scale <= 1) {
             scale = 1;
             position.x = 0;
@@ -250,64 +239,29 @@ document.addEventListener("DOMContentLoaded", function () {
             updateTransform();
         }
 
-        // Применяем замедление к движению
-        const animate = () => {
-            velocity.x *= FRICTION;
-            velocity.y *= FRICTION;
-
-            position.x += velocity.x;
-            position.y += velocity.y;
-
-            restrictPosition();
-            updateTransform();
-
-            if (Math.abs(velocity.x) > 0.1 || Math.abs(velocity.y) > 0.1) {
-                requestAnimationFrame(animate);
+        // Проверка на свайп влево или вправо для перехода на вкладки
+        if (isHorizontalSwipe && Math.abs(position.x) > SWIPE_THRESHOLD) {
+            if (position.x < 0) {
+                switchToNextTab(); // Переход на следующую вкладку
+            } else {
+                switchToPreviousTab(); // Переход на предыдущую вкладку
             }
-        };
-        animate();
+        }
     });
 
+    // Функция для обновления transform на изображении
     function updateTransform() {
         uploadedImage.style.transform = `translate(${position.x}px, ${position.y}px) scale(${scale})`;
     }
 
-    function restrictPosition() {
-        const rect = imageContainer.getBoundingClientRect();
-        const imgRect = uploadedImage.getBoundingClientRect();
-
-        const deltaX = (imgRect.width - rect.width) / 2;
-        const deltaY = (imgRect.height - rect.height) / 2;
-
-        position.x = Math.max(-deltaX, Math.min(deltaX, position.x));
-        position.y = Math.max(-deltaY, Math.min(deltaY, position.y));
-    }
-
+    // Функция для вычисления расстояния между двумя пальцами (для зума)
     function getDistance(pointA, pointB) {
         const dx = pointA.clientX - pointB.clientX;
         const dy = pointA.clientY - pointB.clientY;
         return Math.sqrt(dx * dx + dy * dy);
     }
 
-    function handleImageSwipe(deltaX) {
-        const rect = imageContainer.getBoundingClientRect();
-        const imgRect = uploadedImage.getBoundingClientRect();
-
-        // Если изображение выходит за пределы контейнера, переходим на следующую вкладку
-        if (deltaX < -SWIPE_THRESHOLD && imgRect.right <= rect.right) {
-            switchToNextTab();
-        } else if (deltaX > SWIPE_THRESHOLD && imgRect.left >= rect.left) {
-            switchToPreviousTab();
-        }
-    }
-
-    function handleImagePan(deltaX) {
-        // Панорамируем изображение с учетом минимального расстояния для свайпа
-        position.x += deltaX * 0.2; // Уменьшаем скорость панорамирования для плавности
-        restrictPosition();
-        updateTransform();
-    }
-
+    // Функции для переключения вкладок
     function switchToNextTab() {
         const currentScroll = sectionsWrapper.scrollLeft;
         const tabWidth = sectionsWrapper.offsetWidth;
@@ -332,4 +286,3 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 });
-
