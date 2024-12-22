@@ -341,8 +341,8 @@ body, html {
 }
 
 .qr-code {
-    width: 100px; /* Размер QR-кода */
-    height: 100px;
+    width: 150px; /* Размер QR-кода */
+    height: 150px;
     margin: 5px auto; /* Центрируем по горизонтали, уменьшаем отступы */
     object-fit: contain;
     display: block;
