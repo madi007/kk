@@ -1,4 +1,13 @@
 /* Общие настройки */
+
+.tab:focus {
+    outline: none;
+}
+
+.tabs:focus {
+    outline: none;
+}
+
 button, a, img, div, span {
     outline: none;
 }
