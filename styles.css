@@ -285,37 +285,51 @@ body, html {
 }
 /* Модальное окно */
 /* Основное модальное окно */
+/* Основной стиль для модального окна */
 .modal {
-    position: fixed;
-    bottom: -100%; /* Начальное скрытое состояние */
-    left: 50%; /* Центрирование по горизонтали */
-    transform: translateX(-50%); /* Коррекция для центрирования */
+    position: fixed; /* Закрепляем окно на экране */
+    bottom: -100%; /* Изначально скрыто */
+    left: 50%; /* Центрируем по горизонтали */
+    transform: translateX(-50%) translateY(100%); /* Корректируем позицию */
     width: 90%; /* Уменьшаем ширину до 90% экрана */
-    max-width: 370px; /* Максимальная ширина окна */
-    background: white;
-    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2);
+    max-width: 300px; /* Максимальная ширина */
+    height: 400px; /* Фиксированная высота */
+    background: white; /* Цвет фона */
     border-radius: 10px; /* Скругляем углы */
-    padding: 15px; /* Уменьшаем внутренние отступы */
-    transition: bottom 0.4s ease-in-out, transform 0.3s ease-in-out; /* Анимация появления */
-    z-index: 1000;
+    padding: 20px; /* Внутренние отступы */
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2); /* Тень */
+    z-index: 1000; /* Поверх всех элементов */
+    visibility: hidden; /* Скрываем изначально */
+    opacity: 0; /* Полностью прозрачное */
+    transition: bottom 0.4s ease-in-out, opacity 0.3s ease-in-out; /* Плавное появление */
 }
 
-/* Когда окно показано */
+/* Скрытое состояние модального окна */
+.modal.hidden {
+    bottom: -100%; /* Скрываем за пределы экрана */
+    transform: translateX(-50%) translateY(100%);
+    visibility: hidden;
+    opacity: 0;
+}
+
+/* Видимое состояние модального окна */
 .modal.visible {
-    bottom: 1%; /* Поднимаем окно чуть выше от нижней границы экрана */
-    transform: translateX(-50%) translateY(0); /* Показываем окно */
+    bottom: 10%; /* Показываем чуть выше нижнего края */
+    transform: translateX(-50%) translateY(0);
+    visibility: visible;
+    opacity: 1; /* Полностью видимо */
 }
 
 /* Заголовок модального окна */
 .modal-header {
-    display: flex;
-    justify-content: space-between;
+    display: flex; /* Для выравнивания заголовка и кнопки закрытия */
+    justify-content: space-between; /* Разделяем заголовок и кнопку по краям */
     align-items: center;
-    margin-bottom: 10px; /* Уменьшаем отступ */
+    margin-bottom: 15px;
 }
 
 .modal-header h2 {
-    font-size: 16px; /* Уменьшаем размер текста */
+    font-size: 18px; /* Размер текста */
     font-weight: bold;
     margin: 0;
 }
@@ -327,42 +341,41 @@ body, html {
 }
 
 /* Контент модального окна */
-.modal {
-    position: fixed;
-    bottom: 10%; /* Расположение выше нижнего края экрана */
-    left: 50%;
-    transform: translateX(-50%);
-    width: 90%;
-    max-width: 300px;
-    height: 400px; /* Увеличенная высота */
-    background: white;
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2);
-    z-index: 1000;
-    transition: bottom 0.4s ease-in-out, transform 0.3s ease-in-out;
-    position: relative; /* Для позиционирования элементов внутри */
+.modal-content {
+    text-align: center;
+    padding: 10px 0; /* Отступы для внутреннего контента */
 }
 
+.qr-code {
+    width: 100px; /* Размер QR-кода */
+    height: 100px;
+    margin: 10px auto; /* Центрируем по горизонтали */
+    object-fit: contain;
+    display: block;
+}
+
+/* Обертка для текста "Или скажите код" и самого кода */
 .random-code-wrapper {
-    position: absolute;
-    bottom: 20px; /* Расстояние от нижнего края окна */
-    left: 50%;
+    position: absolute; /* Абсолютное позиционирование */
+    bottom: 20px; /* Расположение у нижнего края окна */
+    left: 50%; /* Центрируем по горизонтали */
     transform: translateX(-50%);
     text-align: center;
 }
 
+/* Текст "Или скажите код" */
 .random-code-wrapper .inst {
-    font-size: 14px; /* Размер текста для инструкции */
+    font-size: 14px; /* Размер текста инструкции */
     color: black;
-    margin-bottom: 10px; /* Отступ между текстом и кодом */
+    margin-bottom: 5px; /* Отступ между текстом и кодом */
 }
 
+/* Шестизначный код */
 .random-code-wrapper .random-code {
-    font-size: 25px; /* Размер текста для кода */
-    font-weight: bold;
-    color: black;
-} 
+    font-size: 25px; /* Размер текста */
+    font-weight: bold; /* Жирный шрифт */
+    color: black; /* Цвет текста */
+}
 /* Страница фиксирована, чтобы не растягивалась */
 
 /* Фиксируем контейнер с изображением на экране */
