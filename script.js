@@ -183,7 +183,9 @@ document.addEventListener("DOMContentLoaded", function () {
     let isSwipeThresholdReached = false;
 
     const SWIPE_THRESHOLD = 50; // Порог для распознавания свайпа
-    const MIN_SWIPE_DISTANCE = 10; // Минимальная дистанция свайпа, чтобы считать его "серьезным"
+    const MIN_SWIPE_DISTANCE = 10; // Минимальная дистанция свайпа для активации свайпа
+    const MAX_ZOOM = 3; // Максимальный зум
+    const MIN_ZOOM = 1; // Минимальный зум
 
     imageContainer.addEventListener("touchstart", (e) => {
         if (e.touches.length === 1) {
@@ -203,6 +205,8 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     imageContainer.addEventListener("touchmove", (e) => {
+        e.preventDefault(); // Останавливаем стандартное поведение, чтобы предотвратить скролл
+
         if (e.touches.length === 1 && isPanning) {
             const deltaX = e.touches[0].clientX - initialTouch.x;
             const deltaY = e.touches[0].clientY - initialTouch.y;
@@ -225,7 +229,7 @@ document.addEventListener("DOMContentLoaded", function () {
         } else if (e.touches.length === 2) {
             // Масштабирование
             const distance = getDistance(e.touches[0], e.touches[1]);
-            const newScale = Math.max(1, Math.min(scale * (distance / 200), 3));
+            const newScale = Math.max(MIN_ZOOM, Math.min(scale * (distance / 200), MAX_ZOOM)); // Ограничиваем зум
             scale = newScale;
 
             const rect = imageContainer.getBoundingClientRect();
@@ -239,24 +243,21 @@ document.addEventListener("DOMContentLoaded", function () {
     imageContainer.addEventListener("touchend", () => {
         isPanning = false;
 
-        // Если масштаб меньше 1, сбрасываем его до 1
-        if (scale <= 1) {
-            scale = 1;
+        // Если масштаб меньше минимального, сбрасываем его до 1
+        if (scale < MIN_ZOOM) {
+            scale = MIN_ZOOM;
             position.x = 0;
             position.y = 0;
             updateTransform();
         }
 
-        // Если движение изображение превышает порог, переключаем вкладки
+        // Если движение изображения превышает порог, переключаем вкладки
         if (isHorizontalSwipe && Math.abs(position.x) > SWIPE_THRESHOLD) {
             if (position.x < 0) {
                 switchToNextTab(); // Переход на следующую вкладку
             } else {
                 switchToPreviousTab(); // Переход на предыдущую вкладку
             }
-        } else if (isVerticalSwipe && Math.abs(position.y) > SWIPE_THRESHOLD) {
-            // Вертикальный свайп — можно использовать для других действий, если нужно
-            console.log("Вертикальный свайп завершён.");
         }
     });
 
