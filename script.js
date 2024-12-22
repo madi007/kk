@@ -306,7 +306,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
-
 document.addEventListener('DOMContentLoaded', () => {
     const copyButtons = document.querySelectorAll('.copy-btn');
 
@@ -334,10 +333,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 const tempInput = document.createElement('textarea');
                 tempInput.value = valueToCopy;
                 tempInput.style.position = 'absolute';
+                tempInput.style.opacity = 0;
                 tempInput.style.left = '-9999px'; // Убираем элемент с экрана
                 document.body.appendChild(tempInput);
                 tempInput.select();
-                document.execCommand('copy'); // Используем execCommand для копирования
+                document.execCommand('copy'); // Копирование без Clipboard API
                 document.body.removeChild(tempInput);
                 alert('Скопировано: ' + valueToCopy);
             } else {
