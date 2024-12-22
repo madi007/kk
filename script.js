@@ -38,6 +38,28 @@ tabs.forEach((tab, index) => {
     });
 });
 
+tabs.forEach((tab, index) => {
+    tab.addEventListener('click', (e) => {
+        // Прокрутка контейнера до нужной позиции
+        const section = sections[index];
+        sectionsWrapper.scrollTo({
+            left: section.offsetLeft,
+            behavior: 'smooth'
+        });
+
+        // Обновление активной вкладки
+        tabs.forEach(tab => tab.classList.remove('active'));
+        tab.classList.add('active');
+
+        // Убираем фокус с вкладки, чтобы не было синей рамки
+        tab.blur(); // Это убирает фокус с вкладки
+
+        // Можно также удалить outline с вкладки, если нужно
+        tab.style.outline = 'none'; // Убираем outline через стиль
+    });
+});
+
+
 
 const sendBtn = document.querySelector('.footer-btn.present-btn');
 const modal = document.querySelector('.modal');
