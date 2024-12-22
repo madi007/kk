@@ -253,9 +253,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const imageContainer = document.getElementById("image-container");
     const uploadedImage = document.getElementById("uploaded-image");
 
-    let scale = 1;
-    let position = { x: 0, y: 0 };
-    let lastPosition = { x: 0, y: 0 };
+    let scale = 1; // Текущий масштаб
+    let position = { x: 0, y: 0 }; // Текущая позиция
+    let lastPosition = { x: 0, y: 0 }; // Последняя позиция
     let isPanning = false;
 
     imageContainer.addEventListener("touchstart", (e) => {
@@ -273,24 +273,60 @@ document.addEventListener("DOMContentLoaded", function () {
         if (e.touches.length === 1 && isPanning) {
             position.x = e.touches[0].clientX - lastPosition.x;
             position.y = e.touches[0].clientY - lastPosition.y;
+
+            // Ограничиваем перемещение
+            restrictPosition();
             updateTransform();
         } else if (e.touches.length === 2) {
             const distance = getDistance(e.touches[0], e.touches[1]);
-            scale = Math.max(1, Math.min(scale * (distance / 200), 3)); // Ограничиваем зум
+            const newScale = Math.max(1, Math.min(scale * (distance / 200), 3)); // Ограничиваем масштаб
+            const scaleChange = newScale / scale;
+            scale = newScale;
+
+            // Центрируем изображение при изменении масштаба
+            const rect = imageContainer.getBoundingClientRect();
+            position.x -= (rect.width / 2 - position.x) * (scaleChange - 1);
+            position.y -= (rect.height / 2 - position.y) * (scaleChange - 1);
+
+            restrictPosition();
             updateTransform();
         }
     });
 
     imageContainer.addEventListener("touchend", () => {
         isPanning = false;
+
+        // Возвращаем изображение к исходным размерам при минимальном масштабе
+        if (scale <= 1) {
+            scale = 1;
+            position.x = 0;
+            position.y = 0;
+            updateTransform();
+        }
     });
 
     function updateTransform() {
         uploadedImage.style.transform = `translate(${position.x}px, ${position.y}px) scale(${scale})`;
     }
 
+    function restrictPosition() {
+        const rect = imageContainer.getBoundingClientRect();
+        const imgRect = uploadedImage.getBoundingClientRect();
+
+        const deltaX = (imgRect.width - rect.width) / 2;
+        const deltaY = (imgRect.height - rect.height) / 2;
+
+        position.x = Math.max(-deltaX, Math.min(deltaX, position.x));
+        position.y = Math.max(-deltaY, Math.min(deltaY, position.y));
+    }
+
     function getDistance(pointA, pointB) {
         const dx = pointA.clientX - pointB.clientX;
+        const dy = pointA.clientY - pointB.clientY;
+        return Math.sqrt(dx * dx + dy * dy);
+    }
+});
+
         const dy = pointA.clientY - pointB.clientY;
         return Math.sqrt(dx * dx + dy * dy);
     }
