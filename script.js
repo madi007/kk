@@ -293,7 +293,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     // Вызов встроенного меню "Поделиться"
                     await navigator.share({
-                        title: "DOC",
+                        title: [file],
                         files: [file],
                     });
 
