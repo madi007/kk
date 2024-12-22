@@ -289,30 +289,26 @@ body, html {
     position: fixed; /* Закрепляем окно на экране */
     bottom: 0; /* Окно будет прикреплено к нижнему краю экрана */
     left: 50%; /* Центрируем по горизонтали */
-    transform: translateX(-50%); /* Центрируем окно по горизонтали */
+    transform: translateX(-50%) translateY(100%); /* Начальное положение снизу */
     width: 90%; /* Уменьшаем ширину до 90% экрана */
     max-width: 370px; /* Максимальная ширина */
-    height: 350px; /* Фиксированная высота */
+    height: 330px; /* Фиксированная высота */
     background: white; /* Цвет фона */
     border-radius: 10px; /* Скругляем углы */
     padding: 20px; /* Внутренние отступы */
     box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2); /* Тень */
     z-index: 1000; /* Поверх всех элементов */
-    opacity: 0; /* Сделаем окно изначально невидимым */
-    visibility: hidden; /* Скрываем окно */
-    transition: opacity 0.4s ease, visibility 0.4s ease; /* Плавное появление */
+    visibility: hidden; /* Окно скрыто по умолчанию */
+    opacity: 0; /* Окно скрыто по умолчанию */
+    transition: transform 0.4s ease, opacity 0.4s ease, visibility 0s 0.4s; /* Плавное появление */
 }
 
 /* Видимое состояние модального окна */
 .modal.visible {
+    transform: translateX(-50%) translateY(0); /* Окно поднимается наверх */
     opacity: 1; /* Окно становится видимым */
     visibility: visible; /* Окно становится видимым */
-}
-
-/* Скрытое состояние модального окна */
-.modal.hidden {
-    opacity: 0; /* Скрываем окно */
-    visibility: hidden; /* Прячем окно */
+    transition: transform 0.4s ease, opacity 0.4s ease, visibility 0s; /* Плавность перехода */
 }
 
 /* Заголовок модального окна */
