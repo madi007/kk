@@ -55,39 +55,39 @@ body, html {
 /* Header */
 .header {
     display: flex;
-    outline: none;
     align-items: center;
+    justify-content: center; /* Центрируем заголовок */
     padding: 15px;
     background-color: white;
     border-bottom: 1px solid white;
-    
+    position: relative; /* Для позиционирования кнопки */
+}
+
+/* Кнопка назад */
+.back-btn {
+    position: absolute; /* Для абсолютного позиционирования кнопки */
+    left: 15px; /* Отступ от левого края */
+    font-size: 25px;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+/* Заголовок */
+.header h1 {
+    text-align: center; /* Центрируем текст */
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    flex-grow: 1; /* Позволяет заголовку занимать всю доступную ширину */
+    margin: 0; /* Убираем отступы */
 }
 
 .copy-btn {  
-            float: right; /* Выравнивание изображения вправо */  
-            width: 25px; /* Ширина изображения */  
-            height: 25px; /* Высота изображения */  
-            margin-left: 20px;
-}
-
-.back-btn {
-    font-size: 25px;
-    background: none;
-    margin-left: - 10px;
-    border: none;
-    outline: none;
-    cursor: pointer;
-    margin-right: 15px;
-}
-
-.header h1 {
-    flex-grow: 1;
-    left: 10px;
-    text-align: center;
-    font-size: 18px;
-    outline: none;
-    font-weight: bold;
-    color: #333;
+    float: right; /* Выравнивание изображения вправо */  
+    width: 25px; /* Ширина изображения */
+    height: 25px; /* Высота изображения */  
+    margin-left: 20px;
 }
 
 /* Tabs */
@@ -348,7 +348,7 @@ body, html {
 /* Обертка для текста "Или скажите код" и самого кода */
 .random-code-wrapper {
     position: absolute; /* Абсолютное позиционирование */
-    bottom: 10px; /* Расположение у нижнего края окна */
+    bottom: 20px; /* Расположение у нижнего края окна */
     left: 50%; /* Центрируем по горизонтали */
     transform: translateX(-50%);
     text-align: center;
