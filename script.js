@@ -38,25 +38,6 @@ tabs.forEach((tab, index) => {
     });
 });
 
-tabs.forEach((tab) => {
-    tab.addEventListener('click', (e) => {
-        tab.style.outline = 'none'; // Убираем синий контур при клике
-    });
-});
-const tabs = document.querySelectorAll('.tab');
-
-tabs.forEach((tab) => {
-    tab.addEventListener('click', (e) => {
-        // Убираем фокус с вкладки, чтобы не было синей рамки
-        tab.blur(); // Убираем фокус, тем самым убираем стандартный синий контур
-
-        // Тут можно добавить другие действия, если необходимо
-    });
-});
-
-
-
-
 const sendBtn = document.querySelector('.footer-btn.present-btn');
 const modal = document.querySelector('.modal');
 const closeModalBtn = document.querySelector('.close-modal-btn');
