@@ -1,16 +1,18 @@
 const sectionsWrapper = document.querySelector('.sections-wrapper');
 const slider = document.querySelector('.slider');
 const tabs = document.querySelectorAll('.tab');
+const sections = document.querySelectorAll('.section'); // Должны быть элементы, которые прокручиваются внутри .sections-wrapper
 
+// Обработчик прокрутки для обновления ползунка и вкладок
 sectionsWrapper.addEventListener('scroll', () => {
     const scrollPosition = sectionsWrapper.scrollLeft;
     const width = sectionsWrapper.offsetWidth;
 
-    // Ползунок
+    // Обновление положения ползунка
     const sliderPosition = (scrollPosition / width) * 100;
     slider.style.transform = `translateX(${sliderPosition}%)`;
 
-    // Активные вкладки
+    // Обновление активной вкладки
     if (scrollPosition < width / 2) {
         tabs[0].classList.add('active');
         tabs[1].classList.remove('active');
@@ -19,6 +21,23 @@ sectionsWrapper.addEventListener('scroll', () => {
         tabs[0].classList.remove('active');
     }
 });
+
+// Обработчик клика по вкладке для прокрутки к соответствующему контейнеру
+tabs.forEach((tab, index) => {
+    tab.addEventListener('click', () => {
+        // Прокрутка контейнера до нужной позиции
+        const section = sections[index];
+        sectionsWrapper.scrollTo({
+            left: section.offsetLeft, // Позиция, куда нужно прокрутить
+            behavior: 'smooth' // Плавная прокрутка
+        });
+
+        // Обновление активной вкладки
+        tabs.forEach(tab => tab.classList.remove('active'));
+        tab.classList.add('active');
+    });
+});
+
 
 const sendBtn = document.querySelector('.footer-btn.present-btn');
 const modal = document.querySelector('.modal');
