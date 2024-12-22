@@ -172,3 +172,17 @@ document.querySelectorAll('button, input, a, textarea, select, img, div, span').
     element.style.outline = '';
   });
 });
+
+const tabs = document.querySelectorAll('.tab');
+
+tabs.forEach((tab) => {
+    tab.addEventListener('click', (e) => {
+        tab.style.outline = 'none'; // Убираем синий контур при клике
+    });
+
+    // Для мобильных устройств сбрасываем фокус при прикосновении
+    tab.addEventListener('touchstart', () => {
+        tab.style.outline = 'none'; // Убираем синий контур при касании
+        tab.blur(); // Убираем фокус
+    });
+});
