@@ -167,10 +167,11 @@ if ('serviceWorker' in navigator) {
 
 // зум
 
-
 document.addEventListener("DOMContentLoaded", function () {
     const imageContainer = document.getElementById("image-container");
     const uploadedImage = document.getElementById("uploaded-image");
+    const sectionsWrapper = document.querySelector(".sections-wrapper");
+    const tabs = document.querySelectorAll(".tab");
 
     let scale = 1;
     let position = { x: 0, y: 0 };
@@ -178,9 +179,6 @@ document.addEventListener("DOMContentLoaded", function () {
     let isPanning = false;
     let initialTouch = { x: 0, y: 0 };
     let isHorizontalSwipe = false;
-
-    const tabs = document.querySelectorAll(".tab");
-    const sectionsWrapper = document.querySelector(".sections-wrapper");
 
     imageContainer.addEventListener("touchstart", (e) => {
         if (e.touches.length === 1) {
@@ -200,12 +198,14 @@ document.addEventListener("DOMContentLoaded", function () {
             const deltaX = e.touches[0].clientX - initialTouch.x;
             const deltaY = e.touches[0].clientY - initialTouch.y;
 
+            // Проверяем, свайп это или перемещение
             if (!isHorizontalSwipe && Math.abs(deltaX) > Math.abs(deltaY)) {
-                // Если это горизонтальный свайп
                 isHorizontalSwipe = true;
-                isPanning = false; // Отключаем панорамирование изображения
-                handleTabSwipe(deltaX);
-            } else if (!isHorizontalSwipe) {
+            }
+
+            if (isHorizontalSwipe) {
+                handleImageSwipe(deltaX);
+            } else {
                 // Панорамирование изображения
                 position.x = e.touches[0].clientX - lastPosition.x;
                 position.y = e.touches[0].clientY - lastPosition.y;
@@ -262,19 +262,35 @@ document.addEventListener("DOMContentLoaded", function () {
         return Math.sqrt(dx * dx + dy * dy);
     }
 
-    function handleTabSwipe(deltaX) {
+    function handleImageSwipe(deltaX) {
+        const rect = imageContainer.getBoundingClientRect();
+        const imgRect = uploadedImage.getBoundingClientRect();
+
+        // Если изображение достигло границ, переключаем вкладки
+        if (deltaX < -50 && imgRect.right <= rect.right) {
+            switchToNextTab();
+        } else if (deltaX > 50 && imgRect.left >= rect.left) {
+            switchToPreviousTab();
+        } else {
+            // Двигаем изображение
+            position.x += deltaX;
+            restrictPosition();
+            updateTransform();
+        }
+    }
+
+    function switchToNextTab() {
         const currentScroll = sectionsWrapper.scrollLeft;
         const tabWidth = sectionsWrapper.offsetWidth;
+        sectionsWrapper.scrollTo({ left: currentScroll + tabWidth, behavior: "smooth" });
+        activateTab(1); // Переключаемся на следующую вкладку
+    }
 
-        if (deltaX < -50) {
-            // Свайп влево — переходим на следующую вкладку
-            sectionsWrapper.scrollTo({ left: currentScroll + tabWidth, behavior: "smooth" });
-            activateTab(1);
-        } else if (deltaX > 50) {
-            // Свайп вправо — переходим на предыдущую вкладку
-            sectionsWrapper.scrollTo({ left: currentScroll - tabWidth, behavior: "smooth" });
-            activateTab(0);
-        }
+    function switchToPreviousTab() {
+        const currentScroll = sectionsWrapper.scrollLeft;
+        const tabWidth = sectionsWrapper.offsetWidth;
+        sectionsWrapper.scrollTo({ left: currentScroll - tabWidth, behavior: "smooth" });
+        activateTab(0); // Переключаемся на предыдущую вкладку
     }
 
     function activateTab(index) {
