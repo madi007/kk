@@ -358,7 +358,7 @@ body, html {
 .random-code-wrapper .inst {
     font-size: 14px; /* Размер шрифта */
     color: black;
-    margin-bottom: 3px; /* Уменьшаем отступ между текстом и кодом */
+    margin-bottom: -5px; /* Уменьшаем отступ между текстом и кодом */
 }
 
 /* Шестизначный код */
