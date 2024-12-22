@@ -291,22 +291,28 @@ body, html {
     left: 50%; /* Центрируем по горизонтали */
     transform: translateX(-50%); /* Центрируем окно по горизонтали */
     width: 90%; /* Уменьшаем ширину до 90% экрана */
-    max-width: 360px; /* Максимальная ширина */
+    max-width: 370px; /* Максимальная ширина */
     height: 350px; /* Фиксированная высота */
     background: white; /* Цвет фона */
     border-radius: 10px; /* Скругляем углы */
     padding: 20px; /* Внутренние отступы */
     box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2); /* Тень */
     z-index: 1000; /* Поверх всех элементов */
-    visibility: visible; /* Окно всегда видно */
-    opacity: 1; /* Окно всегда видно */
-    transition: none; /* Убираем анимацию */
+    opacity: 0; /* Сделаем окно изначально невидимым */
+    visibility: hidden; /* Скрываем окно */
+    transition: opacity 0.4s ease, visibility 0.4s ease; /* Плавное появление */
+}
+
+/* Видимое состояние модального окна */
+.modal.visible {
+    opacity: 1; /* Окно становится видимым */
+    visibility: visible; /* Окно становится видимым */
 }
 
 /* Скрытое состояние модального окна */
 .modal.hidden {
-    visibility: hidden; /* Сделать окно скрытым */
-    opacity: 0;
+    opacity: 0; /* Скрываем окно */
+    visibility: hidden; /* Прячем окно */
 }
 
 /* Заголовок модального окна */
@@ -346,7 +352,7 @@ body, html {
 /* Обертка для текста "Или скажите код" и самого кода */
 .random-code-wrapper {
     position: absolute; /* Абсолютное позиционирование */
-    bottom: 20px; /* Расположение у нижнего края окна */
+    bottom: 10px; /* Расположение у нижнего края окна */
     left: 50%; /* Центрируем по горизонтали */
     transform: translateX(-50%);
     text-align: center;
@@ -356,7 +362,7 @@ body, html {
 .random-code-wrapper .inst {
     font-size: 14px; /* Размер шрифта */
     color: black;
-    margin-bottom: 5px; /* Отступ между текстом и кодом */
+    margin-bottom: 3px; /* Уменьшаем отступ между текстом и кодом */
 }
 
 /* Шестизначный код */
