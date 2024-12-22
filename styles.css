@@ -57,7 +57,7 @@ body, html {
     display: flex;
     align-items: center;
     justify-content: center; /* Центрируем заголовок */
-    padding: 20px 15px; /* Увеличиваем отступы сверху и снизу для объема */
+    padding: 25px 15px; /* Увеличиваем отступы сверху и снизу для объема */
     background-color: white;
     border-bottom: none; /* Убираем разделитель */
     position: relative; /* Для позиционирования кнопки */
@@ -145,6 +145,13 @@ body, html {
     border-radius: 10px;
     z-index: 1;
 }
+
+.copy-btn { 
+    float: right; / * Выравнивание изображения вправо */ 
+    width: 25px; /* Ширина изображения */ 
+    height: 25px; /* Высота изображения */ 
+    margin-left: 20px;
+} 
 
 /* Sections */
 .sections-wrapper {
@@ -286,8 +293,8 @@ body, html {
     left: 50%; /* Центрируем по горизонтали */
     transform: translateX(-50%) translateY(100%); /* Начальное положение снизу */
     width: 90%; /* Уменьшаем ширину до 90% экрана */
-    max-width: 370px; /* Максимальная ширина */
-    height: 330px; /* Фиксированная высота */
+    max-width: 360px; /* Максимальная ширина */
+    height: 320px; /* Фиксированная высота */
     background: white; /* Цвет фона */
     border-radius: 10px; /* Скругляем углы */
     padding: 20px; /* Внутренние отступы */
@@ -344,7 +351,7 @@ body, html {
 /* Обертка для текста "Или скажите код" и самого кода */
 .random-code-wrapper {
     position: absolute; /* Абсолютное позиционирование */
-    bottom: 20px; /* Расположение у нижнего края окна */
+    bottom: 30px; /* Расположение у нижнего края окна */
     left: 50%; /* Центрируем по горизонтали */
     transform: translateX(-50%); /* Центрируем по горизонтали */
     text-align: center;
@@ -362,6 +369,7 @@ body, html {
     font-size: 25px; /* Размер шрифта */
     font-weight: bold; /* Жирный шрифт */
     color: black; /* Цвет текста */
+    margin-top: 5px;
 }
 /* Страница фиксирована, чтобы не растягивалась */
 
