@@ -175,10 +175,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
     let scale = 1;
     let position = { x: 0, y: 0 };
+    let velocity = { x: 0, y: 0 };
     let lastPosition = { x: 0, y: 0 };
     let isPanning = false;
     let initialTouch = { x: 0, y: 0 };
     let isHorizontalSwipe = false;
+    let isSwipeThresholdReached = false;
+
+    const SWIPE_THRESHOLD = 50; // Порог для распознавания свайпа
+    const FRICTION = 0.8; // Замедление движения
+    const MIN_SWIPE_DISTANCE = 10; // Минимальная дистанция свайпа, чтобы считать его "серьезным"
 
     imageContainer.addEventListener("touchstart", (e) => {
         if (e.touches.length === 1) {
@@ -187,7 +193,9 @@ document.addEventListener("DOMContentLoaded", function () {
             isPanning = true;
             lastPosition.x = e.touches[0].clientX - position.x;
             lastPosition.y = e.touches[0].clientY - position.y;
+            velocity = { x: 0, y: 0 }; // Сбрасываем скорость
             isHorizontalSwipe = false; // Сбрасываем флаг свайпа
+            isSwipeThresholdReached = false; // Сбрасываем флаг порога свайпа
         } else if (e.touches.length === 2) {
             isPanning = false;
         }
@@ -198,28 +206,31 @@ document.addEventListener("DOMContentLoaded", function () {
             const deltaX = e.touches[0].clientX - initialTouch.x;
             const deltaY = e.touches[0].clientY - initialTouch.y;
 
-            // Проверяем, свайп это или перемещение
             if (!isHorizontalSwipe && Math.abs(deltaX) > Math.abs(deltaY)) {
                 isHorizontalSwipe = true;
             }
 
             if (isHorizontalSwipe) {
-                handleImageSwipe(deltaX);
+                // Если свайп еще не достиг порога, не срабатывает переход вкладок
+                if (Math.abs(deltaX) > MIN_SWIPE_DISTANCE) {
+                    isSwipeThresholdReached = true;
+                }
+
+                if (isSwipeThresholdReached) {
+                    handleImageSwipe(deltaX);
+                } else {
+                    handleImagePan(deltaX); // Панорамирование с задержкой, если свайп слишком маленький
+                }
             } else {
-                // Панорамирование изображения
-                position.x = e.touches[0].clientX - lastPosition.x;
-                position.y = e.touches[0].clientY - lastPosition.y;
-                restrictPosition();
-                updateTransform();
+                handleImagePan(deltaX); // Панорамирование по вертикали
             }
         } else if (e.touches.length === 2) {
             // Масштабирование
             const distance = getDistance(e.touches[0], e.touches[1]);
-            const newScale = Math.max(1, Math.min(scale * (distance / 200), 3)); // Ограничиваем масштаб
+            const newScale = Math.max(1, Math.min(scale * (distance / 200), 3));
             const scaleChange = newScale / scale;
             scale = newScale;
 
-            // Центрируем изображение при изменении масштаба
             const rect = imageContainer.getBoundingClientRect();
             position.x -= (rect.width / 2 - position.x) * (scaleChange - 1);
             position.y -= (rect.height / 2 - position.y) * (scaleChange - 1);
@@ -232,13 +243,29 @@ document.addEventListener("DOMContentLoaded", function () {
     imageContainer.addEventListener("touchend", () => {
         isPanning = false;
 
-        // Возвращаем изображение к исходным размерам при минимальном масштабе
         if (scale <= 1) {
             scale = 1;
             position.x = 0;
             position.y = 0;
             updateTransform();
         }
+
+        // Применяем замедление к движению
+        const animate = () => {
+            velocity.x *= FRICTION;
+            velocity.y *= FRICTION;
+
+            position.x += velocity.x;
+            position.y += velocity.y;
+
+            restrictPosition();
+            updateTransform();
+
+            if (Math.abs(velocity.x) > 0.1 || Math.abs(velocity.y) > 0.1) {
+                requestAnimationFrame(animate);
+            }
+        };
+        animate();
     });
 
     function updateTransform() {
@@ -266,31 +293,33 @@ document.addEventListener("DOMContentLoaded", function () {
         const rect = imageContainer.getBoundingClientRect();
         const imgRect = uploadedImage.getBoundingClientRect();
 
-        // Если изображение достигло границ, переключаем вкладки
-        if (deltaX < -50 && imgRect.right <= rect.right) {
+        // Если изображение выходит за пределы контейнера, переходим на следующую вкладку
+        if (deltaX < -SWIPE_THRESHOLD && imgRect.right <= rect.right) {
             switchToNextTab();
-        } else if (deltaX > 50 && imgRect.left >= rect.left) {
+        } else if (deltaX > SWIPE_THRESHOLD && imgRect.left >= rect.left) {
             switchToPreviousTab();
-        } else {
-            // Двигаем изображение
-            position.x += deltaX;
-            restrictPosition();
-            updateTransform();
         }
+    }
+
+    function handleImagePan(deltaX) {
+        // Панорамируем изображение с учетом минимального расстояния для свайпа
+        position.x += deltaX * 0.2; // Уменьшаем скорость панорамирования для плавности
+        restrictPosition();
+        updateTransform();
     }
 
     function switchToNextTab() {
         const currentScroll = sectionsWrapper.scrollLeft;
         const tabWidth = sectionsWrapper.offsetWidth;
         sectionsWrapper.scrollTo({ left: currentScroll + tabWidth, behavior: "smooth" });
-        activateTab(1); // Переключаемся на следующую вкладку
+        activateTab(1);
     }
 
     function switchToPreviousTab() {
         const currentScroll = sectionsWrapper.scrollLeft;
         const tabWidth = sectionsWrapper.offsetWidth;
         sectionsWrapper.scrollTo({ left: currentScroll - tabWidth, behavior: "smooth" });
-        activateTab(0); // Переключаемся на предыдущую вкладку
+        activateTab(0);
     }
 
     function activateTab(index) {
@@ -303,3 +332,4 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 });
+
