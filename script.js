@@ -247,86 +247,62 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // Генерация файла
 
+document.addEventListener("DOMContentLoaded", function () {
+    const sendButton = document.querySelector(".footer-btn.send-btn");
 
+    // Функция для создания имени файла
+    function generateFileName() {
+        const iin = localStorage.getItem('iin') || "000000"; // Получаем IIN из localStorage
+        const currentDate = new Date();
+        const year = currentDate.getFullYear();
+        const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+        const day = String(currentDate.getDate()).padStart(2, '0');
+        const randomNumbers = Math.floor(Math.random() * 1e9).toString().padStart(9, '0'); // 9 случайных цифр
+        return `${iin}-${year}${month}${day}${randomNumbers}.pdf`;
+    }
 
-document.addEventListener('DOMContentLoaded', () => {
-const fields = ['fio', 'iin', 'birthdate', 'docNumber', 'issueDate', 'expiryDate'];
-            let isSaved = localStorage.getItem('isSaved');
-        });
+    // Обработчик кнопки "Создать PDF и поделиться"
+    sendButton.addEventListener("click", async () => {
+        const { jsPDF } = window.jspdf;
 
-        const fileInput = document.getElementById("fileInput");
-        const previewImage = document.getElementById("previewImage");
-        const sendButton = document.querySelector(".footer-btn.send-btn");
-
-        // Генерация имени файла
-        function generateFileName() {
-            const iin = localStorage.getItem('iin') || "000000"; // Получаем IIN из localStorage
-            const currentDate = new Date();
-            const year = currentDate.getFullYear();
-            const month = String(currentDate.getMonth() + 1).padStart(2, '0');
-            const day = String(currentDate.getDate()).padStart(2, '0');
-            const randomNumbers = Math.floor(Math.random() * 1e9).toString().padStart(9, '0'); // 9 случайных цифр
-            return `${iin}-${year}${month}${day}${randomNumbers}.pdf`;
+        // Получаем сохранённое изображение из localStorage
+        const savedImage = localStorage.getItem("uploadedImage");
+        if (!savedImage) {
+            alert("Изображение не найдено. Загрузите его перед отправкой.");
+            return;
         }
 
-        // Обработчик загрузки изображения
-        fileInput.addEventListener("change", (event) => {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    previewImage.src = e.target.result; // Отображаем изображение
-                    previewImage.style.display = "block";
-                    sendButton.style.display = "block"; // Показываем кнопку после загрузки
-                };
-                reader.readAsDataURL(file);
+        // Создаём PDF
+        const pdf = new jsPDF();
+        const imgWidth = 210; // Ширина страницы A4
+        const imgHeight = 297; // Высота страницы A4
+        pdf.addImage(savedImage, "JPEG", 0, 0, imgWidth, imgHeight);
+
+        // Преобразуем PDF в Blob
+        const pdfBlob = pdf.output("blob");
+
+        // Генерация имени файла
+        const fileName = generateFileName();
+
+        // Проверяем поддержку Web Share API
+        if (navigator.share && navigator.canShare({ files: [new File([pdfBlob], fileName, { type: "application/pdf" })] })) {
+            try {
+                // Создаём файл для отправки
+                const file = new File([pdfBlob], fileName, { type: "application/pdf" });
+
+                // Вызов встроенного меню "Поделиться"
+                await navigator.share({
+                    title: "PDF файл",
+                    text: "Ваш PDF файл с изображением",
+                    files: [file],
+                });
+
+                console.log("PDF успешно отправлен!");
+            } catch (error) {
+                console.error("Ошибка при отправке:", error);
             }
-        });
-
-        // Обработчик кнопки "Сделать PDF и поделиться"
-        sendButton.addEventListener("click", async () => {
-            const { jsPDF } = window.jspdf;
-
-            // Проверяем, загружено ли изображение
-            if (!previewImage.src) {
-                alert("Пожалуйста, загрузите изображение перед отправкой.");
-                return;
-            }
-
-            // Получаем данные изображения
-            const imgData = previewImage.src;
-
-            // Создаём PDF из изображения
-            const pdf = new jsPDF();
-            const imgWidth = 210; // Ширина страницы A4
-            const imgHeight = (previewImage.naturalHeight / previewImage.naturalWidth) * imgWidth; // Сохраняем пропорции
-
-            pdf.addImage(imgData, "JPEG", 0, 0, imgWidth, imgHeight);
-
-            // Преобразуем PDF в Blob
-            const pdfBlob = pdf.output("blob");
-
-            // Генерация имени файла
-            const fileName = generateFileName();
-
-            // Проверяем поддержку Web Share API
-            if (navigator.share && navigator.canShare({ files: [new File([pdfBlob], fileName, { type: "application/pdf" })] })) {
-                try {
-                    // Создаём файл для отправки
-                    const file = new File([pdfBlob], fileName, { type: "application/pdf" });
-
-                    // Вызов встроенного меню "Поделиться"
-                    await navigator.share({
-                        title: "PDF файл",
-                        text: "Ваш PDF файл с изображением",
-                        files: [file],
-                    });
-
-                    console.log("PDF успешно отправлен!");
-                } catch (error) {
-                    console.error("Ошибка при отправке:", error);
-                }
-            } else {
-                alert("Ваш браузер не поддерживает функцию 'Поделиться'.");
-            }
-        });
+        } else {
+            alert("Ваш браузер не поддерживает функцию 'Поделиться'.");
+        }
+    });
+});
