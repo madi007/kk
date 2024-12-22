@@ -236,7 +236,7 @@ body, html {
     padding: 19px;
     font-size: 16px;
     border: none;
-    border-radius: 5px;
+    border-radius: 7px;
     cursor: pointer;
     font-weight: bold;
     transition: background-color 0.3s, color 0.3s;
