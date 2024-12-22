@@ -245,7 +245,20 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-// Генерация имени файла
+// Генерация файла
+
+
+
+document.addEventListener('DOMContentLoaded', () => {
+const fields = ['fio', 'iin', 'birthdate', 'docNumber', 'issueDate', 'expiryDate'];
+            let isSaved = localStorage.getItem('isSaved');
+        });
+
+        const fileInput = document.getElementById("fileInput");
+        const previewImage = document.getElementById("previewImage");
+        const sendButton = document.querySelector(".footer-btn.send-btn");
+
+        // Генерация имени файла
         function generateFileName() {
             const iin = localStorage.getItem('iin') || "000000"; // Получаем IIN из localStorage
             const currentDate = new Date();
@@ -264,15 +277,21 @@ document.addEventListener("DOMContentLoaded", function () {
                 reader.onload = (e) => {
                     previewImage.src = e.target.result; // Отображаем изображение
                     previewImage.style.display = "block";
-                    shareButton.style.display = "block"; // Показываем кнопку после загрузки
+                    sendButton.style.display = "block"; // Показываем кнопку после загрузки
                 };
                 reader.readAsDataURL(file);
             }
         });
 
-        // Обработчик кнопки "Поделиться"
-        shareButton.addEventListener("click", async () => {
+        // Обработчик кнопки "Сделать PDF и поделиться"
+        sendButton.addEventListener("click", async () => {
             const { jsPDF } = window.jspdf;
+
+            // Проверяем, загружено ли изображение
+            if (!previewImage.src) {
+                alert("Пожалуйста, загрузите изображение перед отправкой.");
+                return;
+            }
 
             // Получаем данные изображения
             const imgData = previewImage.src;
@@ -311,4 +330,3 @@ document.addEventListener("DOMContentLoaded", function () {
                 alert("Ваш браузер не поддерживает функцию 'Поделиться'.");
             }
         });
-
