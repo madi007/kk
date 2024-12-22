@@ -293,7 +293,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     // Вызов встроенного меню "Поделиться"
                     await navigator.share({
-                        title: [file],
                         files: [file],
                     });
 
@@ -307,8 +306,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
-
-
 
 document.addEventListener('DOMContentLoaded', () => {
     const copyButtons = document.querySelectorAll('.copy-btn');
@@ -336,6 +333,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (valueToCopy) {
                 const tempInput = document.createElement('textarea');
                 tempInput.value = valueToCopy;
+                tempInput.style.position = 'absolute';
+                tempInput.style.left = '-9999px'; // Убираем элемент с экрана
                 document.body.appendChild(tempInput);
                 tempInput.select();
                 document.execCommand('copy'); // Используем execCommand для копирования
