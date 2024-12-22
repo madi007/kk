@@ -291,7 +291,7 @@ body, html {
     left: 50%; /* Центрирование по горизонтали */
     transform: translateX(-50%); /* Коррекция для центрирования */
     width: 90%; /* Уменьшаем ширину до 90% экрана */
-    max-width: 300px; /* Максимальная ширина окна */
+    max-width: 370px; /* Максимальная ширина окна */
     background: white;
     box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2);
     border-radius: 10px; /* Скругляем углы */
@@ -302,7 +302,7 @@ body, html {
 
 /* Когда окно показано */
 .modal.visible {
-    bottom: 10%; /* Поднимаем окно чуть выше от нижней границы экрана */
+    bottom: 1%; /* Поднимаем окно чуть выше от нижней границы экрана */
     transform: translateX(-50%) translateY(0); /* Показываем окно */
 }
 
@@ -327,32 +327,41 @@ body, html {
 }
 
 /* Контент модального окна */
-.modal-content {
-    text-align: center;
-    padding: 10px 0; /* Уменьшаем отступы */
-}
-
-.qr-code {
-    width: 100px; /* Уменьшаем размер QR-кода */
-    height: 100px;
-    margin: 10px auto;
-    object-fit: contain;
-    display: block;
+.modal {
+    position: fixed;
+    bottom: 10%; /* Расположение выше нижнего края экрана */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 300px;
+    height: 400px; /* Увеличенная высота */
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    transition: bottom 0.4s ease-in-out, transform 0.3s ease-in-out;
+    position: relative; /* Для позиционирования элементов внутри */
 }
 
 .random-code-wrapper {
-    margin-top: 5px;
+    position: absolute;
+    bottom: 20px; /* Расстояние от нижнего края окна */
+    left: 50%;
+    transform: translateX(-50%);
     text-align: center;
 }
 
 .random-code-wrapper .inst {
-    font-size: 14px; /* Уменьшаем размер текста */
+    font-size: 14px; /* Размер текста для инструкции */
     color: black;
+    margin-bottom: 10px; /* Отступ между текстом и кодом */
 }
 
 .random-code-wrapper .random-code {
-    font-size: 20px; /* Уменьшаем размер текста кода */
+    font-size: 25px; /* Размер текста для кода */
     font-weight: bold;
+    color: black;
 } 
 /* Страница фиксирована, чтобы не растягивалась */
 
