@@ -4,14 +4,6 @@
     outline: none; /* Убираем синий контур */
 }
 
-.tab {
-    -webkit-tap-highlight-color: transparent; /* Убирает эффект выделения при касании */
-}
-
-.tabs:focus {
-    outline: none;
-}
-
 button, a, img, div, span {
     outline: none;
 }
@@ -79,12 +71,14 @@ body, html {
     align-items: center;
     position: relative;
     background-color: white;
+    -webkit-tap-highlight-color: transparent;
     padding: 1px 0;
     outline: none;
     border-bottom: 0px solid #e0e0e0;
 }
 
 .tab-slider {
+    -webkit-tap-highlight-color: transparent;
     display: flex;
     outline: none;
     position: relative;
@@ -98,6 +92,7 @@ body, html {
 }
 
 .tab {
+    -webkit-tap-highlight-color: transparent;
     flex: 1;
     text-align: center;
     font-size: 12px;
@@ -111,11 +106,13 @@ body, html {
 }
 
 .tab.active {
+    -webkit-tap-highlight-color: transparent;
     color: black;
     outline: none;
 }
 
 .slider {
+    -webkit-tap-highlight-color: transparent;
     position: absolute;
     top: 0;
     outline: none;
