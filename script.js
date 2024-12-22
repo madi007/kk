@@ -279,7 +279,7 @@ document.addEventListener("DOMContentLoaded", function () {
             img.src = savedImage;
 
             // Ждём, пока изображение загрузится
-            img.onload = function () {
+            img.onload = async function () { // Делаем эту функцию асинхронной
                 // Получаем исходные размеры изображения
                 const imgOriginalWidth = img.width;
                 const imgOriginalHeight = img.height;
@@ -332,6 +332,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
+
 
 
 
