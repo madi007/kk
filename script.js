@@ -170,72 +170,43 @@ if ('serviceWorker' in navigator) {
 document.addEventListener("DOMContentLoaded", function () {
     const imageContainer = document.getElementById("image-container");
     const uploadedImage = document.getElementById("uploaded-image");
-    const sectionsWrapper = document.querySelector(".sections-wrapper");
-    const tabs = document.querySelectorAll(".tab");
 
-    let scale = 1;
-    let position = { x: 0, y: 0 };
-    let lastPosition = { x: 0, y: 0 };
+    let scale = 1; // Текущий масштаб
+    let position = { x: 0, y: 0 }; // Текущая позиция
+    let lastPosition = { x: 0, y: 0 }; // Последняя позиция
     let isPanning = false;
-    let initialTouch = { x: 0, y: 0 };
-    let isHorizontalSwipe = false;
-    let isVerticalSwipe = false;
-    let isSwipeThresholdReached = false;
-
-    const SWIPE_THRESHOLD = 50; // Порог для распознавания свайпа
-    const MIN_SWIPE_DISTANCE = 10; // Минимальная дистанция свайпа для активации свайпа
-    const MAX_ZOOM = 3; // Максимальный зум
-    const MIN_ZOOM = 1; // Минимальный зум
 
     imageContainer.addEventListener("touchstart", (e) => {
         if (e.touches.length === 1) {
-            // Начало свайпа одним пальцем (перемещение изображения)
-            initialTouch.x = e.touches[0].clientX;
-            initialTouch.y = e.touches[0].clientY;
             isPanning = true;
             lastPosition.x = e.touches[0].clientX - position.x;
             lastPosition.y = e.touches[0].clientY - position.y;
-            isHorizontalSwipe = false; // Сброс флага для горизонтального свайпа
-            isVerticalSwipe = false; // Сброс флага для вертикального свайпа
-            isSwipeThresholdReached = false; // Сброс флага порога свайпа
         } else if (e.touches.length === 2) {
-            // Масштабирование двумя пальцами
             isPanning = false;
         }
     });
 
     imageContainer.addEventListener("touchmove", (e) => {
-        e.preventDefault(); // Останавливаем стандартное поведение, чтобы предотвратить скролл
-
+        e.preventDefault();
         if (e.touches.length === 1 && isPanning) {
-            const deltaX = e.touches[0].clientX - initialTouch.x;
-            const deltaY = e.touches[0].clientY - initialTouch.y;
+            position.x = e.touches[0].clientX - lastPosition.x;
+            position.y = e.touches[0].clientY - lastPosition.y;
 
-            if (!isHorizontalSwipe && Math.abs(deltaX) > Math.abs(deltaY)) {
-                // Проверка, был ли это горизонтальный свайп
-                isHorizontalSwipe = true;
-            }
-
-            if (!isVerticalSwipe && Math.abs(deltaY) > Math.abs(deltaX)) {
-                // Проверка, был ли это вертикальный свайп
-                isVerticalSwipe = true;
-            }
-
-            // Перемещение изображения
-            position.x = deltaX + lastPosition.x;
-            position.y = deltaY + lastPosition.y;
-
+            // Ограничиваем перемещение
+            restrictPosition();
             updateTransform();
         } else if (e.touches.length === 2) {
-            // Масштабирование
             const distance = getDistance(e.touches[0], e.touches[1]);
-            const newScale = Math.max(MIN_ZOOM, Math.min(scale * (distance / 200), MAX_ZOOM)); // Ограничиваем зум
+            const newScale = Math.max(1, Math.min(scale * (distance / 200), 3)); // Ограничиваем масштаб
+            const scaleChange = newScale / scale;
             scale = newScale;
 
+            // Центрируем изображение при изменении масштаба
             const rect = imageContainer.getBoundingClientRect();
-            position.x -= (rect.width / 2 - position.x) * (scale - 1);
-            position.y -= (rect.height / 2 - position.y) * (scale - 1);
+            position.x -= (rect.width / 2 - position.x) * (scaleChange - 1);
+            position.y -= (rect.height / 2 - position.y) * (scaleChange - 1);
 
+            restrictPosition();
             updateTransform();
         }
     });
@@ -243,58 +214,33 @@ document.addEventListener("DOMContentLoaded", function () {
     imageContainer.addEventListener("touchend", () => {
         isPanning = false;
 
-        // Если масштаб меньше минимального, сбрасываем его до 1
-        if (scale < MIN_ZOOM) {
-            scale = MIN_ZOOM;
+        // Возвращаем изображение к исходным размерам при минимальном масштабе
+        if (scale <= 1) {
+            scale = 1;
             position.x = 0;
             position.y = 0;
             updateTransform();
         }
-
-        // Если движение изображения превышает порог, переключаем вкладки
-        if (isHorizontalSwipe && Math.abs(position.x) > SWIPE_THRESHOLD) {
-            if (position.x < 0) {
-                switchToNextTab(); // Переход на следующую вкладку
-            } else {
-                switchToPreviousTab(); // Переход на предыдущую вкладку
-            }
-        }
     });
 
-    // Функция для обновления transform на изображении
     function updateTransform() {
         uploadedImage.style.transform = `translate(${position.x}px, ${position.y}px) scale(${scale})`;
     }
 
-    // Функция для вычисления расстояния между двумя пальцами (для зума)
+    function restrictPosition() {
+        const rect = imageContainer.getBoundingClientRect();
+        const imgRect = uploadedImage.getBoundingClientRect();
+
+        const deltaX = (imgRect.width - rect.width) / 2;
+        const deltaY = (imgRect.height - rect.height) / 2;
+
+        position.x = Math.max(-deltaX, Math.min(deltaX, position.x));
+        position.y = Math.max(-deltaY, Math.min(deltaY, position.y));
+    }
+
     function getDistance(pointA, pointB) {
         const dx = pointA.clientX - pointB.clientX;
         const dy = pointA.clientY - pointB.clientY;
         return Math.sqrt(dx * dx + dy * dy);
-    }
-
-    // Функции для переключения вкладок
-    function switchToNextTab() {
-        const currentScroll = sectionsWrapper.scrollLeft;
-        const tabWidth = sectionsWrapper.offsetWidth;
-        sectionsWrapper.scrollTo({ left: currentScroll + tabWidth, behavior: "smooth" });
-        activateTab(1);
-    }
-
-    function switchToPreviousTab() {
-        const currentScroll = sectionsWrapper.scrollLeft;
-        const tabWidth = sectionsWrapper.offsetWidth;
-        sectionsWrapper.scrollTo({ left: currentScroll - tabWidth, behavior: "smooth" });
-        activateTab(0);
-    }
-
-    function activateTab(index) {
-        tabs.forEach((tab, i) => {
-            if (i === index) {
-                tab.classList.add("active");
-            } else {
-                tab.classList.remove("active");
-            }
-        });
     }
 });
