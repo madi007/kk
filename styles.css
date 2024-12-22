@@ -1,4 +1,12 @@
 /* Общие настройки */
+body, html {
+    touch-action: manipulation; /* Запретит зум и скролл жестами */
+}
+
+#image-container {
+    touch-action: none; /* Включаем возможность зума и перемещения для контейнера */
+}
+
 * {
     outline: none; /* Убирает стандартный контур для всех элементов */
     -webkit-tap-highlight-color: transparent; /* Убирает синий эффект при касании на мобильных устройствах */
