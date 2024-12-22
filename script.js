@@ -311,37 +311,39 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 document.addEventListener('DOMContentLoaded', () => {
-            const copyButtons = document.querySelectorAll('.copy-btn');
+    const copyButtons = document.querySelectorAll('.copy-btn');
 
-            copyButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    let valueToCopy;
+    copyButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            let valueToCopy;
 
-                    // Определяем, какое значение нужно скопировать на основе класса кнопки
-                    if (button.classList.contains('fio-btn')) {
-                        valueToCopy = localStorage.getItem('fio');
-                    } else if (button.classList.contains('iin-btn')) {
-                        valueToCopy = localStorage.getItem('iin');
-                    } else if (button.classList.contains('dd-btn')) {
-                        valueToCopy = localStorage.getItem('birthdate');
-                    } else if (button.classList.contains('nom-btn')) {
-                        valueToCopy = localStorage.getItem('docNumber');
-                    } else if (button.classList.contains('db-btn')) {
-                        valueToCopy = localStorage.getItem('issueDate');
-                    } else if (button.classList.contains('sb-btn')) {
-                        valueToCopy = localStorage.getItem('expiryDate');
-                    }
+            // Определяем, какое значение нужно скопировать на основе класса кнопки
+            if (button.classList.contains('fio-btn')) {
+                valueToCopy = localStorage.getItem('fio');
+            } else if (button.classList.contains('iin-btn')) {
+                valueToCopy = localStorage.getItem('iin');
+            } else if (button.classList.contains('dd-btn')) {
+                valueToCopy = localStorage.getItem('birthdate');
+            } else if (button.classList.contains('nom-btn')) {
+                valueToCopy = localStorage.getItem('docNumber');
+            } else if (button.classList.contains('db-btn')) {
+                valueToCopy = localStorage.getItem('issueDate');
+            } else if (button.classList.contains('sb-btn')) {
+                valueToCopy = localStorage.getItem('expiryDate');
+            }
 
-                    // Если значение найдено, копируем его в буфер обмена
-                    if (valueToCopy) {
-                        navigator.clipboard.writeText(valueToCopy).then(() => {
-                            alert('Скопировано: ' + valueToCopy);
-                        }).catch(err => {
-                            console.error('Ошибка копирования: ', err);
-                        });
-                    } else {
-                        alert('Нет данных для копирования');
-                    }
-                });
-            });
+            // Если значение найдено, копируем его в буфер обмена
+            if (valueToCopy) {
+                const tempInput = document.createElement('textarea');
+                tempInput.value = valueToCopy;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                document.execCommand('copy'); // Используем execCommand для копирования
+                document.body.removeChild(tempInput);
+                alert('Скопировано: ' + valueToCopy);
+            } else {
+                alert('Нет данных для копирования');
+            }
         });
+    });
+});
