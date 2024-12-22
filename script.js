@@ -248,3 +248,50 @@ if ('serviceWorker' in navigator) {
                 alert('Пожалуйста, заполните все поля.');
             }
         });
+
+document.addEventListener("DOMContentLoaded", function () {
+    const imageContainer = document.getElementById("image-container");
+    const uploadedImage = document.getElementById("uploaded-image");
+
+    let scale = 1;
+    let position = { x: 0, y: 0 };
+    let lastPosition = { x: 0, y: 0 };
+    let isPanning = false;
+
+    imageContainer.addEventListener("touchstart", (e) => {
+        if (e.touches.length === 1) {
+            isPanning = true;
+            lastPosition.x = e.touches[0].clientX - position.x;
+            lastPosition.y = e.touches[0].clientY - position.y;
+        } else if (e.touches.length === 2) {
+            isPanning = false;
+        }
+    });
+
+    imageContainer.addEventListener("touchmove", (e) => {
+        e.preventDefault();
+        if (e.touches.length === 1 && isPanning) {
+            position.x = e.touches[0].clientX - lastPosition.x;
+            position.y = e.touches[0].clientY - lastPosition.y;
+            updateTransform();
+        } else if (e.touches.length === 2) {
+            const distance = getDistance(e.touches[0], e.touches[1]);
+            scale = Math.max(1, Math.min(scale * (distance / 200), 3)); // Ограничиваем зум
+            updateTransform();
+        }
+    });
+
+    imageContainer.addEventListener("touchend", () => {
+        isPanning = false;
+    });
+
+    function updateTransform() {
+        uploadedImage.style.transform = `translate(${position.x}px, ${position.y}px) scale(${scale})`;
+    }
+
+    function getDistance(pointA, pointB) {
+        const dx = pointA.clientX - pointB.clientX;
+        const dy = pointA.clientY - pointB.clientY;
+        return Math.sqrt(dx * dx + dy * dy);
+    }
+});
