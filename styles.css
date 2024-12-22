@@ -57,20 +57,22 @@ body, html {
     display: flex;
     align-items: center;
     justify-content: center; /* Центрируем заголовок */
-    padding: 15px;
+    padding: 20px 15px; /* Увеличиваем отступы сверху и снизу для объема */
     background-color: white;
-    border-bottom: 1px solid white;
+    border-bottom: 1px solid #ccc; /* Тонкая граница для объема */
     position: relative; /* Для позиционирования кнопки */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Легкая тень для объема */
 }
 
 /* Кнопка назад */
 .back-btn {
     position: absolute; /* Для абсолютного позиционирования кнопки */
-    left: 15px; /* Отступ от левого края */
+    left: 0; /* Сдвигаем кнопку влево */
     font-size: 25px;
     background: none;
     border: none;
     cursor: pointer;
+    padding: 0; /* Убираем padding, чтобы кнопка не была слишком большой */
 }
 
 /* Заголовок */
@@ -313,8 +315,8 @@ body, html {
 
 /* Заголовок модального окна */
 .modal-header {
-    display: flex; /* Для выравнивания заголовка и кнопки закрытия */
-    justify-content: space-between; /* Разделяем заголовок и кнопку по краям */
+    display: flex;
+    justify-content: space-between; /* Разделяем заголовок и кнопку */
     align-items: center;
     margin-bottom: 15px;
 }
@@ -322,9 +324,10 @@ body, html {
 .modal-header h2 {
     font-size: 18px; /* Размер текста */
     font-weight: bold;
-    margin: 0;
+    margin: 0; /* Убираем отступы */
 }
 
+/* Кнопка закрытия модального окна */
 .close-modal-btn {
     background: none;
     border: none;
@@ -348,9 +351,9 @@ body, html {
 /* Обертка для текста "Или скажите код" и самого кода */
 .random-code-wrapper {
     position: absolute; /* Абсолютное позиционирование */
-    bottom: 20px; /* Расположение у нижнего края окна */
+    bottom: 10px; /* Расположение у нижнего края окна */
     left: 50%; /* Центрируем по горизонтали */
-    transform: translateX(-50%);
+    transform: translateX(-50%); /* Центрируем по горизонтали */
     text-align: center;
 }
 
@@ -358,7 +361,7 @@ body, html {
 .random-code-wrapper .inst {
     font-size: 14px; /* Размер шрифта */
     color: black;
-    margin-bottom: -5px; /* Уменьшаем отступ между текстом и кодом */
+    margin-bottom: 5px; /* Уменьшаем отступ между текстом и кодом */
 }
 
 /* Шестизначный код */
@@ -366,7 +369,7 @@ body, html {
     font-size: 25px; /* Размер шрифта */
     font-weight: bold; /* Жирный шрифт */
     color: black; /* Цвет текста */
-}
+} 
 /* Страница фиксирована, чтобы не растягивалась */
 
 /* Фиксируем контейнер с изображением на экране */
