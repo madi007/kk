@@ -1,7 +1,11 @@
 /* Общие настройки */
 
-.tab:focus {
-    outline: none;
+.tab:focus, .tab:focus-visible {
+    outline: none; /* Убираем синий контур */
+}
+
+.tab {
+    -webkit-tap-highlight-color: transparent; /* Убирает эффект выделения при касании */
 }
 
 .tabs:focus {
