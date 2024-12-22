@@ -286,7 +286,7 @@ body, html {
     position: fixed;
     bottom: -95%;
     left: 0;
-    right: 10px:
+    right: 15px:
     width: 100%;
     max-width: 380px;
     background: white;
@@ -334,6 +334,7 @@ body, html {
     position: fixed;
     bottom: 0;
     left: 50%; /* Центрируем по горизонтали */
+    rigth: 15px;
     transform: translateX(-50%) translateY(100%); /* Смещаем по горизонтали и скрываем */
     width: 400px; /* Фиксированная ширина */
     height: 300px; /* Фиксированная высота */
@@ -359,7 +360,7 @@ body, html {
 .modal-header h2 {
     margin: 0; /* Убираем отступы сверху и снизу */
     font-size: 18px; /* Размер заголовка */
-    margin-left: 5px;
+    margin-left: 10px;
 }
 
 .modal-content {
