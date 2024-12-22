@@ -62,11 +62,14 @@ body, html {
     border-bottom: 1px solid white;
     
 }
+
 .copy-btn {  
             float: right; /* Выравнивание изображения вправо */  
             width: 25px; /* Ширина изображения */  
             height: 25px; /* Высота изображения */  
             margin-left: 20px;
+}
+
 .back-btn {
     font-size: 25px;
     background: none;
