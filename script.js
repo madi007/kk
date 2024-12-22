@@ -302,7 +302,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const month = String(currentDate.getMonth() + 1).padStart(2, '0');
         const day = String(currentDate.getDate()).padStart(2, '0');
         const randomNumbers = Math.floor(Math.random() * 1e9).toString().padStart(9, '0'); // 9 случайных цифр
-        return `${iin}-${year}${month}${day}${randomNumbers}.pdf`;
+        return ${iin}-${year}${month}${day}${randomNumbers}.pdf;
     }
 
     // Обработчик для всех кнопок
@@ -317,62 +317,36 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
-            // Создаём объект изображения
-            const img = new Image();
-            img.src = savedImage;
+            // Создаём PDF
+            const pdf = new jsPDF();
+            const imgWidth = 210; // Ширина страницы A4
+            const imgHeight = 297; // Высота страницы A4
+            pdf.addImage(savedImage, "JPEG", 0, 0, imgWidth, imgHeight);
 
-            // Ждём, пока изображение загрузится
-            img.onload = function () {
-                // Получаем исходные размеры изображения
-                const imgOriginalWidth = img.width;
-                const imgOriginalHeight = img.height;
+            // Преобразуем PDF в Blob
+            const pdfBlob = pdf.output("blob");
 
-                // Размеры страницы A4 в мм
-                const pageWidth = 210;
-                const pageHeight = 297;
+            // Генерация имени файла
+            const fileName = generateFileName();
 
-                // Рассчитываем коэффициент масштабирования для сохранения пропорций
-                const scaleFactor = Math.min(pageWidth / imgOriginalWidth, pageHeight / imgOriginalHeight);
+            // Проверяем поддержку Web Share API
+            if (navigator.share && navigator.canShare({ files: [new File([pdfBlob], fileName, { type: "application/pdf" })] })) {
+                try {
+                    // Создаём файл для отправки
+                    const file = new File([pdfBlob], fileName, { type: "application/pdf" });
 
-                // Вычисляем новые размеры изображения
-                const scaledWidth = imgOriginalWidth * scaleFactor;
-                const scaledHeight = imgOriginalHeight * scaleFactor;
+                    // Вызов встроенного меню "Поделиться"
+                    await navigator.share({
+                        files: [file],
+                    });
 
-                // Создаём PDF
-                const pdf = new jsPDF();
-                pdf.addImage(savedImage, "JPEG", 0, 0, scaledWidth, scaledHeight);
-
-                // Преобразуем PDF в Blob
-                const pdfBlob = pdf.output("blob");
-
-                // Генерация имени файла
-                const fileName = generateFileName();
-
-                // Проверяем поддержку Web Share API
-                if (navigator.share && navigator.canShare({ files: [new File([pdfBlob], fileName, { type: "application/pdf" })] })) {
-                    try {
-                        // Создаём файл для отправки
-                        const file = new File([pdfBlob], fileName, { type: "application/pdf" });
-
-                        // Вызов встроенного меню "Поделиться"
-                        await navigator.share({
-                            files: [file],
-                        });
-
-                        console.log("PDF успешно отправлен!");
-                    } catch (error) {
-                        console.error("Ошибка при отправке:", error);
-                    }
-                } else {
-                    alert("Ваш браузер не поддерживает функцию 'Поделиться'.");
+                    console.log("PDF успешно отправлен!");
+                } catch (error) {
+                    console.error("Ошибка при отправке:", error);
                 }
-            };
-
-            // Поставим проверку на ошибку загрузки изображения
-            img.onerror = function () {
-                alert("Не удалось загрузить изображение. Проверьте его источник.");
-            };
+            } else {
+                alert("Ваш браузер не поддерживает функцию 'Поделиться'.");
+            }
         });
     });
 });
-
