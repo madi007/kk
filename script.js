@@ -179,6 +179,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let isPanning = false;
     let initialTouch = { x: 0, y: 0 };
     let isHorizontalSwipe = false;
+    let isVerticalSwipe = false;
     let isSwipeThresholdReached = false;
 
     const SWIPE_THRESHOLD = 50; // Порог для распознавания свайпа
@@ -193,6 +194,7 @@ document.addEventListener("DOMContentLoaded", function () {
             lastPosition.x = e.touches[0].clientX - position.x;
             lastPosition.y = e.touches[0].clientY - position.y;
             isHorizontalSwipe = false; // Сброс флага для горизонтального свайпа
+            isVerticalSwipe = false; // Сброс флага для вертикального свайпа
             isSwipeThresholdReached = false; // Сброс флага порога свайпа
         } else if (e.touches.length === 2) {
             // Масштабирование двумя пальцами
@@ -210,10 +212,16 @@ document.addEventListener("DOMContentLoaded", function () {
                 isHorizontalSwipe = true;
             }
 
-            if (isHorizontalSwipe) {
-                position.x = deltaX + lastPosition.x; // Перемещение изображения
-                updateTransform();
+            if (!isVerticalSwipe && Math.abs(deltaY) > Math.abs(deltaX)) {
+                // Проверка, был ли это вертикальный свайп
+                isVerticalSwipe = true;
             }
+
+            // Перемещение изображения
+            position.x = deltaX + lastPosition.x;
+            position.y = deltaY + lastPosition.y;
+
+            updateTransform();
         } else if (e.touches.length === 2) {
             // Масштабирование
             const distance = getDistance(e.touches[0], e.touches[1]);
@@ -239,13 +247,16 @@ document.addEventListener("DOMContentLoaded", function () {
             updateTransform();
         }
 
-        // Проверка на свайп влево или вправо для перехода на вкладки
+        // Если движение изображение превышает порог, переключаем вкладки
         if (isHorizontalSwipe && Math.abs(position.x) > SWIPE_THRESHOLD) {
             if (position.x < 0) {
                 switchToNextTab(); // Переход на следующую вкладку
             } else {
                 switchToPreviousTab(); // Переход на предыдущую вкладку
             }
+        } else if (isVerticalSwipe && Math.abs(position.y) > SWIPE_THRESHOLD) {
+            // Вертикальный свайп — можно использовать для других действий, если нужно
+            console.log("Вертикальный свайп завершён.");
         }
     });
 
