@@ -73,7 +73,7 @@ body, html {
 .back-btn {
     font-size: 25px;
     background: none;
-    left: 10px;
+    margin-left: - 10px;
     border: none;
     outline: none;
     cursor: pointer;
