@@ -38,26 +38,22 @@ tabs.forEach((tab, index) => {
     });
 });
 
-tabs.forEach((tab, index) => {
+tabs.forEach((tab) => {
     tab.addEventListener('click', (e) => {
-        // Прокрутка контейнера до нужной позиции
-        const section = sections[index];
-        sectionsWrapper.scrollTo({
-            left: section.offsetLeft,
-            behavior: 'smooth'
-        });
-
-        // Обновление активной вкладки
-        tabs.forEach(tab => tab.classList.remove('active'));
-        tab.classList.add('active');
-
-        // Убираем фокус с вкладки, чтобы не было синей рамки
-        tab.blur(); // Это убирает фокус с вкладки
-
-        // Можно также удалить outline с вкладки, если нужно
-        tab.style.outline = 'none'; // Убираем outline через стиль
+        tab.style.outline = 'none'; // Убираем синий контур при клике
     });
 });
+const tabs = document.querySelectorAll('.tab');
+
+tabs.forEach((tab) => {
+    tab.addEventListener('click', (e) => {
+        // Убираем фокус с вкладки, чтобы не было синей рамки
+        tab.blur(); // Убираем фокус, тем самым убираем стандартный синий контур
+
+        // Тут можно добавить другие действия, если необходимо
+    });
+});
+
 
 
 
