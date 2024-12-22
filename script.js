@@ -1,3 +1,5 @@
+document.querySelector('body').style.transform = 'translate(-10px, -10px)';
+
 const sectionsWrapper = document.querySelector('.sections-wrapper');
 const slider = document.querySelector('.slider');
 const tabs = document.querySelectorAll('.tab');
