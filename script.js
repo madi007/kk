@@ -164,35 +164,56 @@ if ('serviceWorker' in navigator) {
             }
         });
 
+
+// зум
+
+
 document.addEventListener("DOMContentLoaded", function () {
     const imageContainer = document.getElementById("image-container");
     const uploadedImage = document.getElementById("uploaded-image");
 
-    let scale = 1; // Текущий масштаб
-    let position = { x: 0, y: 0 }; // Текущая позиция
-    let lastPosition = { x: 0, y: 0 }; // Последняя позиция
+    let scale = 1;
+    let position = { x: 0, y: 0 };
+    let lastPosition = { x: 0, y: 0 };
     let isPanning = false;
+    let initialTouch = { x: 0, y: 0 };
+    let isHorizontalSwipe = false;
+
+    const tabs = document.querySelectorAll(".tab");
+    const sectionsWrapper = document.querySelector(".sections-wrapper");
 
     imageContainer.addEventListener("touchstart", (e) => {
         if (e.touches.length === 1) {
+            initialTouch.x = e.touches[0].clientX;
+            initialTouch.y = e.touches[0].clientY;
             isPanning = true;
             lastPosition.x = e.touches[0].clientX - position.x;
             lastPosition.y = e.touches[0].clientY - position.y;
+            isHorizontalSwipe = false; // Сбрасываем флаг свайпа
         } else if (e.touches.length === 2) {
             isPanning = false;
         }
     });
 
     imageContainer.addEventListener("touchmove", (e) => {
-        e.preventDefault();
         if (e.touches.length === 1 && isPanning) {
-            position.x = e.touches[0].clientX - lastPosition.x;
-            position.y = e.touches[0].clientY - lastPosition.y;
+            const deltaX = e.touches[0].clientX - initialTouch.x;
+            const deltaY = e.touches[0].clientY - initialTouch.y;
 
-            // Ограничиваем перемещение
-            restrictPosition();
-            updateTransform();
+            if (!isHorizontalSwipe && Math.abs(deltaX) > Math.abs(deltaY)) {
+                // Если это горизонтальный свайп
+                isHorizontalSwipe = true;
+                isPanning = false; // Отключаем панорамирование изображения
+                handleTabSwipe(deltaX);
+            } else if (!isHorizontalSwipe) {
+                // Панорамирование изображения
+                position.x = e.touches[0].clientX - lastPosition.x;
+                position.y = e.touches[0].clientY - lastPosition.y;
+                restrictPosition();
+                updateTransform();
+            }
         } else if (e.touches.length === 2) {
+            // Масштабирование
             const distance = getDistance(e.touches[0], e.touches[1]);
             const newScale = Math.max(1, Math.min(scale * (distance / 200), 3)); // Ограничиваем масштаб
             const scaleChange = newScale / scale;
@@ -240,5 +261,29 @@ document.addEventListener("DOMContentLoaded", function () {
         const dy = pointA.clientY - pointB.clientY;
         return Math.sqrt(dx * dx + dy * dy);
     }
-});
 
+    function handleTabSwipe(deltaX) {
+        const currentScroll = sectionsWrapper.scrollLeft;
+        const tabWidth = sectionsWrapper.offsetWidth;
+
+        if (deltaX < -50) {
+            // Свайп влево — переходим на следующую вкладку
+            sectionsWrapper.scrollTo({ left: currentScroll + tabWidth, behavior: "smooth" });
+            activateTab(1);
+        } else if (deltaX > 50) {
+            // Свайп вправо — переходим на предыдущую вкладку
+            sectionsWrapper.scrollTo({ left: currentScroll - tabWidth, behavior: "smooth" });
+            activateTab(0);
+        }
+    }
+
+    function activateTab(index) {
+        tabs.forEach((tab, i) => {
+            if (i === index) {
+                tab.classList.add("active");
+            } else {
+                tab.classList.remove("active");
+            }
+        });
+    }
+});
