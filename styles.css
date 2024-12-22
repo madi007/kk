@@ -1,4 +1,13 @@
 /* Общие настройки */
+* {
+    outline: none; /* Убирает стандартный контур для всех элементов */
+    -webkit-tap-highlight-color: transparent; /* Убирает синий эффект при касании на мобильных устройствах */
+}
+
+button:focus, a:focus, input:focus, textarea:focus, select:focus {
+    outline: none; /* Убираем контур с кнопок, ссылок и формы при фокусе */
+}
+
 
 .tab:focus, .tab:focus-visible {
     outline: none; /* Убираем синий контур */
