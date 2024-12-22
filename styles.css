@@ -286,8 +286,9 @@ body, html {
     position: fixed;
     bottom: -95%;
     left: 0;
+    right: 10px:
     width: 100%;
-    max-width: 350px;
+    max-width: 380px;
     background: white;
     box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2);
     border-radius: 10px 10px 0 0;
