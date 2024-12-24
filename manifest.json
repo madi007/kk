@@ -1,8 +1,9 @@
 {
   "name": "Kaspi.kz",
   "short_name": "Kaspi.kz",
-  "start_url": "index.html",
-  "scope": "/",
+  "start_url": "kk/index.html",
+  "id": "kk",
+  "scope": "/kk/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#000000",
