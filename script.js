@@ -374,3 +374,28 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    // ====== Общие функции ======
+
+    // ====== Логика для index.html ======
+    const backButton = document.getElementById("back-btn");
+    if (backButton) {
+        backButton.addEventListener("click", function () {
+            resetData(); // Очищаем localStorage
+            // Дополнительно можно скрыть или изменить текст кнопки, если нужно
+            backButton.textContent = "Данные удалены";
+        });
+    }
+
+    // Сброс всех данных из localStorage
+    function resetData() {
+        localStorage.clear();
+        alert("Данные успешно удалены!");
+    }
+
+});
